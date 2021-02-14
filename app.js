@@ -39,7 +39,6 @@ const showImages = (images) => {
    }
 
    gallery.innerHTML = '';
-   //toggleSpinner();
 
   images.forEach(image => {
     let div = document.createElement('div');
@@ -159,7 +158,4 @@ const toggleSpinner = () =>{
 const displayError = error =>{
   const errorMessage = document.getElementById('error-message');
   errorMessage.innerText = error;
-
-  const loadingSpinner = document.getElementById('loading-spinner');
-  loadingSpinner.classList.remove('d-none');
 }
