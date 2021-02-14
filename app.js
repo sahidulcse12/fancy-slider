@@ -15,29 +15,39 @@ let sliders = [];
 const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
 document.getElementById('search').addEventListener("keypress", function (event) {
-  console.log(searchInput);
+  toggleSpinner();
   if (event.keyCode == 13) {
     searchBtn.click();
   }
 });
 
 searchBtn.addEventListener('click', function () {
+  toggleSpinner();
   getImages(searchInput);
 
 })
 
 // show images 
 const showImages = (images) => {
-  imagesArea.style.display = 'block';
-  gallery.innerHTML = '';
-  // show gallery title
-  galleryHeader.style.display = 'flex';
+
+  if (!images.length) {
+    displayError("No Matching Images Found");
+    galleryHeader.style.display = 'none';
+   }else{
+    galleryHeader.style.display = 'flex';
+    imagesArea.style.display = 'block';
+   }
+
+   gallery.innerHTML = '';
+   //toggleSpinner();
+
   images.forEach(image => {
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div)
   })
+  toggleSpinner();
 
 }
 
@@ -45,7 +55,7 @@ const getImages = (query) => {
   fetch(`https://pixabay.com/api/?key=${KEY}&q=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
     .then(data => showImages(data.hits))
-    .catch(err => console.log(err))
+    .catch(() =>displayError('Something went wrong!!please try again later'));
 }
 
 let slideIndex = 0;
@@ -140,3 +150,16 @@ searchBtn.addEventListener('click', function () {
 sliderBtn.addEventListener('click', function () {
   createSlider()
 })
+
+const toggleSpinner = () =>{
+  const loadingSpinner = document.getElementById('loading-spinner');
+  loadingSpinner.classList.toggle('d-none');
+}
+
+const displayError = error =>{
+  const errorMessage = document.getElementById('error-message');
+  errorMessage.innerText = error;
+
+  const loadingSpinner = document.getElementById('loading-spinner');
+  loadingSpinner.classList.remove('d-none');
+}
